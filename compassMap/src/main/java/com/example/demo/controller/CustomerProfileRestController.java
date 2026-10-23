@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 
+import com.example.demo.model.Customer;
 import com.example.demo.model.CustomerProfile;
 import com.example.demo.service.CustomerProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +18,11 @@ public class CustomerProfileRestController {
     //----------------------------- GET -----------------------------
 
     @GetMapping("/all")
-    public void getAllProfiles() {
-        // to do
-
+    public Iterable<CustomerProfile> getAllProfiles() {
+        // call service to get all customersProfile and return them
+        Iterable<CustomerProfile> customerProfiles =  customerProfileService.getAllCustomerProfiles();
+        System.out.println("Service getAllCustomerProfiles: " + customerProfiles);
+        return customerProfiles;
     }
 
     //----------------------------- DELETE -----------------------------
@@ -33,9 +36,10 @@ public class CustomerProfileRestController {
     // ----------------------------- CREATE -----------------------------
 
     @PostMapping("/create")
-    public void createProfile(CustomerProfile customerProfile) {
-        // to do
-
+    public CustomerProfile createProfile(CustomerProfile customerProfile) {
+        CustomerProfile newProfile = customerProfileService.createCustomerProfile(customerProfile);
+        System.out.println("Service createCustomer: " + newProfile);
+        return newProfile;
     }
 
     @PostMapping("/all")

@@ -1,26 +1,25 @@
 package com.example.demo.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-//@Entity
+@Entity
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Question {
 
-    //@Id
+    @Id
     private String id;
+    private String name;
     private String text;
     @Enumerated(EnumType.STRING)
     private Dimension dimension;
+    @Column(name = "question_order")
     private int order;
     private double weight;
 }

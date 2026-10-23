@@ -1,10 +1,6 @@
 package com.example.demo.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,9 +13,16 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class QuestionAndAnswer {
 
-    //@Id
+//    @Id
     private String id;
     private Question question;
     private Answer answer;
     private Double scoreContribution;
+
+    // methods
+    public String toString() {
+        return String.format(
+                "QuestionAndAnswer[id=%s, question='%s', answer='%s', scoreContribution='%s']",
+                id, question, answer, scoreContribution);
+    }
 }
