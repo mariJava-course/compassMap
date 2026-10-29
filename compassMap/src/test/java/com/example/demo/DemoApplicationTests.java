@@ -1,6 +1,8 @@
 package com.example.demo;
 
+import com.example.demo.model.Answer;
 import com.example.demo.model.Customer;
+import com.example.demo.model.Question;
 import com.example.demo.model.QuestionAndAnswer;
 import com.example.demo.repository.QuestionAndAnswerRepository;
 import com.example.demo.repository.QuestionRepository;
@@ -37,7 +39,7 @@ class DemoApplicationTests {
 
 
 	}
-
+/*
 	@Test
 	void deleteCustomerById(){
 
@@ -69,18 +71,34 @@ class DemoApplicationTests {
 
 			customerService.createCustomer(newCustomer);
 		}
-	}
+	} */
+
+	@Autowired
+	QuestionAndAnswerRepository questionAndAnswerRepository;
 
 	@Test
 	void questionAndAnswerTentative(){
 
 		// the test must fetch a question
+		Question q1 = repositoryQuestion.findById("b2465fe1-cb9c-466e-9f51-5775e2590936").orElse(null);
+
+
 		// and then create an empty questionAndAnswer
+		QuestionAndAnswer qa1 = new QuestionAndAnswer();
+		qa1.setId("qa-001");
 		// set it with id q-001
 		// set it with question
+		qa1.setQuestion(q1);
 		// set it with answer a-001
- 		// and then save it
+		qa1.setAnswer(new Answer("a-001", true));
+		qa1.setScoreContribution(1.2);
+		// and then save it
+		questionAndAnswerRepository.save(qa1);
 		// and then fetch it
+		QuestionAndAnswer qa2 = questionAndAnswerRepository.findById("qa-001").orElse(null);
+
+		System.out.println(qa2);
+
 		// optionally, delete it
 
 
