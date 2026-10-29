@@ -1,25 +1,31 @@
 package com.example.demo.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-//@Entity
+@Entity
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class QuestionAndAnswer {
 
-    //@Id
+    @Id
     private String id;
+
+    @JsonIgnore
+    @JoinColumn(name = "QUESTION_FK")
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Question question;
-    private Answer answer;
+
+    /* @JsonIgnore
+    @JoinColumn(name = "ANSWER_FK")
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Answer answer; */
+
     private Double scoreContribution;
 }

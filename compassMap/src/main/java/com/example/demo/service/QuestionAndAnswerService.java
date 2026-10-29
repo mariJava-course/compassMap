@@ -1,6 +1,8 @@
 package com.example.demo.service;
 
 import com.example.demo.model.QuestionAndAnswer;
+import com.example.demo.repository.QuestionAndAnswerRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -11,8 +13,8 @@ public class QuestionAndAnswerService {
 
     // we are using here DEPENDENCE INJECTION
     // to do: uncomment when QuestionAndAnswer becomes an @Entity
-    // @Autowired
-    // private QuestionAndAnswerRepository questionAndAnswerRepository;
+    @Autowired
+    private QuestionAndAnswerRepository questionAndAnswerRepository;
 
     public Iterable<QuestionAndAnswer> getAllQuestionAndAnswers() {
         // to do: return questionAndAnswerRepository.findAll();
@@ -24,7 +26,7 @@ public class QuestionAndAnswerService {
         questionAndAnswer.setId(UUID.randomUUID().toString());
 
         // to do: call repository to use SAVE operation to save data to h2 db
-        // QuestionAndAnswer createdQuestionAndAnswer = questionAndAnswerRepository.save(questionAndAnswer);
+        QuestionAndAnswer createdQuestionAndAnswer = questionAndAnswerRepository.save(questionAndAnswer);
         System.out.println("Service created questionAndAnswer: " + questionAndAnswer);
         return questionAndAnswer;
     }
@@ -71,9 +73,9 @@ public class QuestionAndAnswerService {
         if (incoming.getQuestion() != null) {
             existing.setQuestion(incoming.getQuestion());
         }
-        if (incoming.getAnswer() != null) {
-            existing.setAnswer(incoming.getAnswer());
-        }
+        //if (incoming.getAnswer() != null) {
+        //    existing.setAnswer(incoming.getAnswer());
+        //}
         if (incoming.getScoreContribution() != null) {
             existing.setScoreContribution(incoming.getScoreContribution());
         }

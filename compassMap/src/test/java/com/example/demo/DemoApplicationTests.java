@@ -1,7 +1,14 @@
 package com.example.demo;
 
 import com.example.demo.model.Customer;
+import com.example.demo.model.Dimension;
+import com.example.demo.model.Question;
+import com.example.demo.model.QuestionAndAnswer;
+import com.example.demo.repository.CustomerRepository;
+import com.example.demo.repository.QuestionAndAnswerRepository;
 import com.example.demo.service.CustomerService;
+import com.example.demo.service.QuestionAndAnswerService;
+import com.example.demo.service.QuestionService;
 import com.github.javafaker.Faker;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +19,7 @@ class DemoApplicationTests {
 
 	//@Autowired
 	//private CustomerRepository customerRepository;
+
 	@Autowired
 	private CustomerService customerService;
 
@@ -27,10 +35,49 @@ class DemoApplicationTests {
 
 		Customer customerFound2 = customerService.getCustomerById("banana");
 		System.out.println("Customer found 2 : " + customerFound2 );
+	}
 
+	@Autowired
+	private QuestionService questionService;
+
+	@Autowired
+	private QuestionAndAnswerService questionAndAnswerService;
+
+	@Autowired
+	private QuestionAndAnswerRepository questionAndAnswerRepository;
+
+	@Test
+	void createQuestions() {
+		Question newQuestion = new Question();
+		newQuestion.setText("Do you know to code?");
+		newQuestion.setOrder(10);
+		newQuestion.setWeight(0.3) ;
+		newQuestion.setDimension(Dimension.KNOWS_CODE);
+		questionService.createQuestion(newQuestion);
+
+		Question newQuestion2 = new Question();
+		newQuestion2.setText("Do you want to learn to code?");
+		newQuestion2.setOrder(11);
+		newQuestion2.setWeight(0.2) ;
+		newQuestion2.setDimension(Dimension.WANTS_TO_LEARN);
+		questionService.createQuestion(newQuestion2);
+
+
+
+		QuestionAndAnswer newQuestionAndAnswer = new QuestionAndAnswer();
+		newQuestionAndAnswer.setQuestion(newQuestion);
+		//newQuestionAndAnswer.setAnswer(new Answer("a-001", true);
+		newQuestionAndAnswer.setScoreContribution(1.2);
+		// by repository
+		//questionAndAnswerRepository.save(newQuestionAndAnswer);
+		// by service
+		questionAndAnswerService.createQuestionAndAnswer(newQuestionAndAnswer);
 
 	}
 
+
+
+	/*
 	@Test
 	void deleteCustomerById(){
 
@@ -62,7 +109,7 @@ class DemoApplicationTests {
 
 			customerService.createCustomer(newCustomer);
 		}
-	}
+	} */
 
 
 
