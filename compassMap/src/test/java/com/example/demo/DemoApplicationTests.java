@@ -1,9 +1,6 @@
 package com.example.demo;
 
-import com.example.demo.model.Customer;
-import com.example.demo.model.Dimension;
-import com.example.demo.model.Question;
-import com.example.demo.model.QuestionAndAnswer;
+import com.example.demo.model.*;
 import com.example.demo.repository.CustomerRepository;
 import com.example.demo.repository.QuestionAndAnswerRepository;
 import com.example.demo.service.CustomerService;
@@ -66,7 +63,8 @@ class DemoApplicationTests {
 
 		QuestionAndAnswer newQuestionAndAnswer = new QuestionAndAnswer();
 		newQuestionAndAnswer.setQuestion(newQuestion);
-		//newQuestionAndAnswer.setAnswer(new Answer("a-001", true);
+		//newQuestionAndAnswer.setAnswer(null);
+		//newQuestionAndAnswer.setAnswer(new Answer("a-001", true));
 		newQuestionAndAnswer.setScoreContribution(1.2);
 		// by repository
 		//questionAndAnswerRepository.save(newQuestionAndAnswer);

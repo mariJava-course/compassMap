@@ -22,10 +22,20 @@ public class QuestionAndAnswer {
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Question question;
 
-    /* @JsonIgnore
+
+    /*@ManyToOne
+    @JoinColumn(name = "question_id", nullable = false)
+    private Question question;*/
+
+    /*@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "answer_id")
+    private Answer answer;*/
+
+    /*@JsonIgnore
     @JoinColumn(name = "ANSWER_FK")
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Answer answer; */
+    //@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    private Answer answer;*/
 
     private Double scoreContribution;
 }
