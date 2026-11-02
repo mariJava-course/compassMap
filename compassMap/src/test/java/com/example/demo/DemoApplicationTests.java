@@ -1,9 +1,7 @@
 package com.example.demo;
 
-import com.example.demo.model.Answer;
-import com.example.demo.model.Customer;
-import com.example.demo.model.Question;
-import com.example.demo.model.QuestionAndAnswer;
+import com.example.demo.model.*;
+import com.example.demo.repository.CustomerProfileRepository;
 import com.example.demo.repository.QuestionAndAnswerRepository;
 import com.example.demo.repository.QuestionRepository;
 import com.example.demo.service.CustomerService;
@@ -12,6 +10,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 @SpringBootTest
 class DemoApplicationTests {
 
@@ -19,10 +21,13 @@ class DemoApplicationTests {
 	//private CustomerRepository customerRepository;
 	@Autowired
 	private CustomerService customerService;
+
 	@Autowired
 	private QuestionAndAnswerRepository repositoryQuestionAndAnswer;
 	@Autowired
 	private QuestionRepository repositoryQuestion;
+	@Autowired
+	private CustomerProfileRepository repositoryCustomerProfile;
 
 	@Test
 	void contextLoads() {
@@ -36,8 +41,6 @@ class DemoApplicationTests {
 
 		Customer customerFound2 = customerService.getCustomerById("banana");
 		System.out.println("Customer found 2 : " + customerFound2 );
-
-
 	}
 
 	@Test
@@ -88,8 +91,9 @@ class DemoApplicationTests {
 		 */
 
 		// the test must fetch a question
-		Question question = repositoryQuestion.findById("7504a93c-a16c-4438-a140-4ae7dd326631").orElse(null);
+		Question question = repositoryQuestion.findById("efa80629-15aa-48f9-aea3-0c14e75c316f").orElse(null);
 		System.out.println("Question fetched: " + question);
+
 		// and then create an empty questionAndAnswer
 		QuestionAndAnswer qa1 = new QuestionAndAnswer();
 		// set it with id q-001
@@ -105,6 +109,7 @@ class DemoApplicationTests {
 		qa1.setScoreContribution(1.0);
  		// and then save it
 		repositoryQuestionAndAnswer.save(qa1);
+
 		// and then fetch it
 		QuestionAndAnswer questionAndAnswerFound = repositoryQuestionAndAnswer.findById("qa-001").orElse(null);
 		System.out.println("QuestionAndAnswer found: " + questionAndAnswerFound);
@@ -113,6 +118,62 @@ class DemoApplicationTests {
 		//System.out.println("QuestionAndAnswer exists after delete: " + repositoryQuestionAndAnswer.existsById("q-001"));
 	}
 
+	@Test
+	void customerProfileTentative(){
+		CustomerProfile cp1 = new CustomerProfile();
+
+		cp1.setId("cp-001");
+		cp1.setCodeProfile(CodeProfile.BEGINNER);
+		cp1.setName("You are a Beginner");
+		cp1.setDescription("xxxx xxxx xxxx");
+		cp1.setGoal("dls,fdfgkñlg dslfksñdfk");
+
+		Map<Dimension, Boolean> answers = new HashMap<>();
+		answers.put(Dimension.KNOWS_CODE, true);
+		answers.put(Dimension.WANTS_TO_LEARN, false);
+		cp1.setAnswers(answers);
+
+		Answer answer = new Answer();
+		answer.setId("a-001");
+		answer.setValue(true);
+
+
+		RoadMap roadMap = new RoadMap();
+		roadMap.setId("r-001");
+		roadMap.setName("Roadmap BackEnd");
+		roadMap.setDescription("Roadmap BackEnd Description");
+		//roadMap.setStepsItemsSummary(null);
+		Map<Integer, String> stepsItemsSummary = new HashMap<>();
+		stepsItemsSummary.put(1, "Parte 1");
+		stepsItemsSummary.put(2, "Parte 2");
+		stepsItemsSummary.put(3, "Parte 3");
+		stepsItemsSummary.put(4, "Parte 4");
+		stepsItemsSummary.put(5, "Parte 5");
+		roadMap.setStepsItemsSummary(stepsItemsSummary);
+		roadMap.setSteps(5);
+		roadMap.setCompleted(false);
+
+		RoadMap roadMap2 = new RoadMap();
+		roadMap2.setId("r-002");
+		roadMap2.setName("Roadmap FrontEnd");
+		roadMap2.setDescription("Roadmap FrontEnd Description");
+		roadMap2.setStepsItemsSummary(null);
+		roadMap2.setSteps(5);
+		roadMap2.setCompleted(false);
+
+		ArrayList<RoadMap> roadmaps = new ArrayList<>();
+		roadmaps.add(roadMap);
+		roadmaps.add(roadMap2);
+
+		cp1.setRoadMaps(roadmaps);
+
+		repositoryCustomerProfile.save(cp1);
+
+		CustomerProfile customerProfileFound = repositoryCustomerProfile.findById("cp-001").orElse(null);
+		System.out.println("***** CustomerProfile found: " + customerProfileFound);
+
+
+	}
 
 
 }
