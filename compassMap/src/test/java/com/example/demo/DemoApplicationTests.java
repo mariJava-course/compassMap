@@ -59,12 +59,16 @@ class DemoApplicationTests {
 		newQuestion2.setDimension(Dimension.WANTS_TO_LEARN);
 		questionService.createQuestion(newQuestion2);
 
-
+		/*Answer newAnswer = new Answer();
+		newAnswer.setId("a-001");
+		newAnswer.setValue(true);*/
+		//answerService.createAnswer(newAnswer);
 
 		QuestionAndAnswer newQuestionAndAnswer = new QuestionAndAnswer();
 		newQuestionAndAnswer.setQuestion(newQuestion);
 		//newQuestionAndAnswer.setAnswer(null);
-		//newQuestionAndAnswer.setAnswer(new Answer("a-001", true));
+		newQuestionAndAnswer.setAnswer(new Answer("a-001", true));
+		//newQuestionAndAnswer.setAnswer(newAnswer);
 		newQuestionAndAnswer.setScoreContribution(1.2);
 		// by repository
 		//questionAndAnswerRepository.save(newQuestionAndAnswer);

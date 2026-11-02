@@ -31,11 +31,11 @@ public class QuestionAndAnswer {
     @JoinColumn(name = "answer_id")
     private Answer answer;*/
 
-    /*@JsonIgnore
+    @JsonIgnore
     @JoinColumn(name = "ANSWER_FK")
-    //@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    private Answer answer;*/
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    //@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    private Answer answer;
 
     private Double scoreContribution;
 }

@@ -1,5 +1,6 @@
 package com.example.demo.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
@@ -16,6 +17,7 @@ public class Answer {
 
     @Id
     private String id;
+    @Column(name = "answer_value")
     private Boolean value;
 
     public boolean isCorrect(Boolean expected) {
