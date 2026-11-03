@@ -77,8 +77,8 @@ public class CustomerProfileService {
         if (incoming.getGoal() != null) {
             existing.setGoal(incoming.getGoal());
         }
-        if (incoming.getAnswers() != null) {
-            existing.setAnswers(incoming.getAnswers());
+        if (incoming.getProfileAnswers() != null) {
+            existing.setProfileAnswers(incoming.getProfileAnswers());
         }
         // to do: recommendedRoadmap once the relationship is enabled
         return customerProfileRepository.save(existing);

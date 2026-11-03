@@ -1,10 +1,7 @@
 package com.example.demo;
 
-import com.example.demo.model.CodeProfile;
-import com.example.demo.model.Customer;
-import com.example.demo.model.CustomerProfile;
-import com.example.demo.model.RoadMap;
-import com.example.demo.repository.AssessmentViewRepository;
+import com.example.demo.model.*;
+//import com.example.demo.repository.AssessmentViewRepository;
 import com.example.demo.repository.CustomerProfileRepository;
 import com.example.demo.repository.RoadMapRepository;
 import com.example.demo.service.CustomerService;
@@ -33,8 +30,8 @@ class DemoApplicationTests {
 	private RoadMapRepository roadMapRepository;
 	@Autowired
 	private CustomerProfileRepository customerProfileRepository;
-	@Autowired
-	private AssessmentViewRepository assessmentViewRepository;
+	//@Autowired
+	//private AssessmentViewRepository assessmentViewRepository;
 
 	@Test
 	void contextLoads() {
@@ -108,9 +105,14 @@ class DemoApplicationTests {
 				CustomerProfile.builder().id("P03").codeProfile(CodeProfile.BEGINNER)
 						.name("Starting from scratch in programming").goal("Starting from scratch in programming")
 						.description("Absolute beginners who want to really learn programming").build(),
-				CustomerProfile.builder().id("P04").codeProfile(CodeProfile.NON_DEVELOPER)
-						.name("General introductory course").goal("General introductory course")
-						.description("Non-developers who want to understand what developers do").build()
+				CustomerProfile.builder()
+						.id("P04")
+						.codeProfile(CodeProfile.NON_DEVELOPER)
+						.name("General introductory course")
+						.goal("General introductory course")
+						.description("Non-developers who want to understand what developers do")
+						.profileAnswers(Dimension.KNOWS_CODE, false)
+						.build()
 		);
 
 		// we will assign a roadmap to each customer profile
