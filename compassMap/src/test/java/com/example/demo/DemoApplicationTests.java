@@ -1,7 +1,7 @@
 package com.example.demo;
 
 import com.example.demo.model.*;
-//import com.example.demo.repository.AssessmentViewRepository;
+import com.example.demo.repository.AssessmentViewRepository;
 import com.example.demo.repository.CustomerProfileRepository;
 import com.example.demo.repository.RoadMapRepository;
 import com.example.demo.service.CustomerService;
@@ -13,8 +13,10 @@ import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
 import java.io.File;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -30,8 +32,8 @@ class DemoApplicationTests {
 	private RoadMapRepository roadMapRepository;
 	@Autowired
 	private CustomerProfileRepository customerProfileRepository;
-	//@Autowired
-	//private AssessmentViewRepository assessmentViewRepository;
+	@Autowired
+	private AssessmentViewRepository assessmentViewRepository;
 
 	@Test
 	void contextLoads() {
@@ -83,6 +85,24 @@ class DemoApplicationTests {
 	}
 
 	@Test
+	void assessmentView() {
+
+	CustomerProfile found = customerProfileRepository.findById("P04").orElseThrow();
+
+	AssessmentView assessmentView = AssessmentView.builder()
+			.id("as_001")
+			.timestamp(Instant.now())
+			.qtyQuestions(5)
+			.profile(found)
+			.build();
+
+	assessmentViewRepository.save(assessmentView);
+
+	AssessmentView assessmentView2 = assessmentViewRepository.findById("as_001").orElseThrow();
+	System.out.println(assessmentView2);
+	}
+
+	@Test
 	void customerProfileRoadMap() throws Exception {
 
 
@@ -95,7 +115,7 @@ class DemoApplicationTests {
 
 		// we will create 5 customer profiles WITH NO ROADMAP
 		// JSON file is in docs/mockup/4-1.md
-		List<CustomerProfile> profiles = List.of(
+		/*List<CustomerProfile> profiles = List.of(
 				CustomerProfile.builder().id("P01").codeProfile(CodeProfile.ARCHITECT)
 						.name("Improve programming skills").goal("Improve programming skills")
 						.description("Developers who already know how to code and want to go deeper").build(),
@@ -104,16 +124,57 @@ class DemoApplicationTests {
 						.description("People who know programming and want to boost productivity with AI").build(),
 				CustomerProfile.builder().id("P03").codeProfile(CodeProfile.BEGINNER)
 						.name("Starting from scratch in programming").goal("Starting from scratch in programming")
-						.description("Absolute beginners who want to really learn programming").build(),
+						.description("Absolute beginners who want to really learn programming")
+						.profileAnswers(Map.of(
+								Dimension.KNOWS_CODE, false,
+								Dimension.WANTS_TO_LEARN, false,
+								Dimension.KNOWS_ML, true,
+								Dimension.WANTS_TO_LEARN_ML, false,
+								Dimension.KNOWS_GIT, true
+						))
+						.build(),
 				CustomerProfile.builder()
 						.id("P04")
 						.codeProfile(CodeProfile.NON_DEVELOPER)
 						.name("General introductory course")
 						.goal("General introductory course")
 						.description("Non-developers who want to understand what developers do")
-						.profileAnswers(Dimension.KNOWS_CODE, false)
+						.profileAnswers(Map.of(
+										Dimension.KNOWS_CODE, false,
+										Dimension.WANTS_TO_LEARN, false,
+										Dimension.KNOWS_ML, false,
+										Dimension.WANTS_TO_LEARN_ML, false,
+										Dimension.KNOWS_GIT, true
+						))
 						.build()
-		);
+		);*/
+
+		// we will create 4 profiles from the JSON file
+		// JSON file is in docs/mockup/profiles.json
+		List<CustomerProfile> profiles = new ObjectMapper().readValue(
+				new File("../docs/mockup/profiles.json"),
+				new TypeReference<List<CustomerProfile>>() {});
+
+		/*Map<Dimension, Boolean> answers = new HashMap<>();
+		answers.put(Dimension.KNOWS_CODE, true);
+		answers.put(Dimension.WANTS_TO_LEARN, false);
+		profiles.getLast().setProfileAnswers(answers);*/
+
+		profiles.get(2).setProfileAnswers(Map.of(
+				Dimension.KNOWS_CODE, false,
+				Dimension.WANTS_TO_LEARN, false,
+				Dimension.KNOWS_ML, true,
+				Dimension.WANTS_TO_LEARN_ML, false,
+				Dimension.KNOWS_GIT, true
+		));
+
+		profiles.getLast().setProfileAnswers(Map.of(
+				Dimension.KNOWS_CODE, true,
+				Dimension.WANTS_TO_LEARN, true,
+ 				Dimension.KNOWS_ML, true,
+				Dimension.WANTS_TO_LEARN_ML, true,
+				Dimension.KNOWS_GIT, true
+		));
 
 		// we will assign a roadmap to each customer profile
 		for (CustomerProfile profile : profiles) {
