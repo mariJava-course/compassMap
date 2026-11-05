@@ -5,6 +5,7 @@ import com.example.demo.repository.RoadMapRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -19,63 +20,34 @@ public class RoadMapService {
         return roadMapRepository.findAll();
     }
 
-    public RoadMap createRoadMap(RoadMap roadMap) {
-        // SET ID roadMap to UUID (id is not sent from client)
+    public RoadMap createRoadMap (RoadMap roadMap){
+        // SET ID roadMap to UUID
         roadMap.setId(UUID.randomUUID().toString());
 
         // call repository to use SAVE operation to save data to h2 db
         RoadMap createdRoadMap = roadMapRepository.save(roadMap);
-        System.out.println("Service created roadMap: " + createdRoadMap);
+        System.out.println("Service created roadMap: " +  createdRoadMap);
         return createdRoadMap;
     }
 
-    public void deleteRoadMap(String id) {
-        roadMapRepository.deleteById(id);
+    public void deleteRoadMap (String id){
+      roadMapRepository.deleteById(id);
+
     }
 
-    public RoadMap getRoadMapById(String id) {
-
+    public RoadMap getRoadMapById(String id){
         Optional<RoadMap> foundRoadMap = roadMapRepository.findById(id);
-
         return foundRoadMap.orElse(null);
     }
 
-    public Iterable<RoadMap> saveAll(Iterable<RoadMap> roadMaps) {
-        for (RoadMap roadMap : roadMaps) {
-            // SET ID roadMap to UUID (id is not sent from client)
-            roadMap.setId(UUID.randomUUID().toString());
-        }
-        return roadMapRepository.saveAll(roadMaps);
+    public void saveAll(ArrayList<RoadMap> roadMaps) {
+        roadMapRepository.saveAll(roadMaps);
     }
 
-    public void deleteAllRoadMaps() {
-        roadMapRepository.deleteAll();
-    }
+    public void deleteAllRoadMaps() { roadMapRepository.deleteAll();}
 
     public long countRoadMaps() {
         return roadMapRepository.count();
     }
 
-    public RoadMap updateRoadMap(RoadMap incoming) {
-        if (incoming.getId() == null) {
-            return null;
-        }
-        RoadMap existing = getRoadMapById(incoming.getId());
-        if (existing == null) {
-            return null;
-        }
-        // merge only non-null fields from incoming (partial update semantics)
-        if (incoming.getName() != null) {
-            existing.setName(incoming.getName());
-        }
-        if (incoming.getDescription() != null) {
-            existing.setDescription(incoming.getDescription());
-        }
-        if (incoming.getStepsItemsSummary() != null) {
-            existing.setStepsItemsSummary(incoming.getStepsItemsSummary());
-        }
-        existing.setSteps(incoming.getSteps());
-        existing.setCompleted(incoming.isCompleted());
-        return roadMapRepository.save(existing);
-    }
 }
