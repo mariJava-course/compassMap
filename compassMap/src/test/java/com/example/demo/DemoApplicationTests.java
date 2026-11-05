@@ -1,10 +1,7 @@
 package com.example.demo;
 
 import com.example.demo.model.*;
-import com.example.demo.repository.CustomerProfileRepository;
-import com.example.demo.repository.QuestionAndAnswerRepository;
-import com.example.demo.repository.QuestionRepository;
-import com.example.demo.repository.RoadMapRepository;
+import com.example.demo.repository.*;
 import com.example.demo.service.AssessmentViewService;
 import com.example.demo.service.CustomerService;
 import com.github.javafaker.Faker;
@@ -15,8 +12,10 @@ import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
 import java.io.File;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -39,6 +38,8 @@ class DemoApplicationTests {
 	private CustomerProfileRepository customerProfileRepository;
 	@Autowired
 	private AssessmentViewService assessmentViewService;
+	@Autowired
+	private AssessmentViewRepository assessmentViewRepository;
 
 	@Test
 	void contextLoads() {
@@ -196,13 +197,13 @@ class DemoApplicationTests {
 		// question must exist before the assessment
 		Question question = questionRepository.save(
 				Question.builder()
-					.id(UUID.randomUUID().toString()).
-					name("q-test")
+					.id(UUID.randomUUID().toString())
+					.name("q-test")
 					.text("Have you written code before?")
-						.dimension(Dimension.KNOWS_CODE)
+					.dimension(Dimension.KNOWS_CODE)
 					.order(1)
 					.weight(1.0)
-						.build());
+					.build());
 
 		// profile must exist before the assessment
 		CustomerProfile profile = customerProfileRepository.save(CustomerProfile.builder()
@@ -221,8 +222,8 @@ class DemoApplicationTests {
 		// add 2 Q&A rows
 		assessmentView.addQuestionAndAnswer(QuestionAndAnswer
 				.builder()
-				.question(question).
-				answer(Answer.builder()
+				.question(question)
+				.answer(Answer.builder()
 						.value(true)
 						.build())
 				.scoreContribution(1.0)
@@ -250,7 +251,7 @@ class DemoApplicationTests {
 		assertEquals(1, assessmentViewService.getAssessmentViewsByCustomerId(customer.getId()).size());
 		assertEquals(profile.getId(), assessmentViewService.getAssessmentViewById(created.getId()).getProfile().getId());
 
-
+		/*
 		// ------------------------------------	CLEAN UP ------------------------------------
 		// deleting the assessment cascades to its Q&A rows
 		assessmentViewService.deleteAssessmentView(created.getId());
@@ -259,7 +260,189 @@ class DemoApplicationTests {
 		// deleting the profile cascades to its assessment views
 		customerProfileRepository.deleteById(profile.getId());
 		questionRepository.deleteById(question.getId());
-		customerService.deleteCustomer(customer.getId());
+		customerService.deleteCustomer(customer.getId());*/
+	}
+
+	@Test
+	void assessmentView() {
+
+		//Customer customer = customerService.getCustomerById("752c8dec-cb29-47ea-8eb5-9885346ead98");
+
+		// customer, question and profile must exist before the assessment
+		Customer customer = customerService.createCustomer(
+		//Customer customer = Customer.builder()
+						Customer.builder()
+						//.id("c-001")
+						.firstName("MyCustomer2")
+						.lastName("Assessment Test2")
+						.build());
+
+		//CustomerProfile profile = customerProfileRepository.findById("P03").orElseThrow();
+
+		// profile must exist before the assessment
+		CustomerProfile profile = customerProfileRepository.save(CustomerProfile.builder()
+				.id("P-TEST-" + UUID.randomUUID())
+				.codeProfile(CodeProfile.BEGINNER)
+				.name("Testxxx profile")
+				.customer(customer)
+				.build());
+
+		// question must exist before the assessment
+		Question question = questionRepository.save(
+				Question.builder()
+						.id(UUID.randomUUID().toString())
+						.name("q-test")
+						.text("Have you written code before?")
+						.dimension(Dimension.KNOWS_CODE)
+						.order(1)
+						.weight(1.0)
+						.build());
+
+		//ArrayList<QuestionAndAnswer> questionAndAnswers = new ArrayList<>();
+		//questionAndAnswers.(question);
+
+		AssessmentView assessmentView = AssessmentView.builder()
+//				.id("as_002")
+				.customer(customer)
+				.timestamp(Instant.now())
+				.qtyQuestions(3)
+//				.questionsAndAnswers(questionAndAnswers)
+				.profile(profile)
+				.build();
+
+		// add 2 Q&A rows
+		assessmentView.addQuestionAndAnswer(QuestionAndAnswer
+				.builder()
+//				.id("qaa_003")  // **
+				.question(question)
+				.answer(Answer.builder()
+//						.id("a_020")  // **
+						.value(true)
+						.build())
+				.scoreContribution(1.0)
+				.build());
+		assessmentView.addQuestionAndAnswer(QuestionAndAnswer
+				.builder()
+//				.id("qaa_004")  // **
+				.question(question)
+				.answer(Answer.builder()
+//						.id("a_021")  // **
+						.value(false)
+						.build())
+				.scoreContribution(0.0)
+				.build());
+
+
+		AssessmentView created = assessmentViewService.createAssessmentView(assessmentView);
+		System.out.println(created);
+		System.out.println(created.getQuestionsAndAnswers());
+
+		//assessmentViewRepository.save(assessmentView);
+		//AssessmentView assessmentView2 = assessmentViewRepository.findById("as_002").orElseThrow();
+		//System.out.println(assessmentView2);
+	}
+
+	@Test
+	void customerProfileRoadMap() throws Exception {
+
+
+
+		// we will create 20 roadmaps from the JSON file
+		// JSON file is in docs/mockup/roadmaps.json
+		List<RoadMap> roadMaps = new ObjectMapper().readValue(
+				new File("../docs/mockup/roadmaps.json"),
+				new TypeReference<List<RoadMap>>() {});
+
+		// we will create 5 customer profiles WITH NO ROADMAP
+		// JSON file is in docs/mockup/4-1.md
+		/*List<CustomerProfile> profiles = List.of(
+				CustomerProfile.builder().id("P01").codeProfile(CodeProfile.ARCHITECT)
+						.name("Improve programming skills").goal("Improve programming skills")
+						.description("Developers who already know how to code and want to go deeper").build(),
+				CustomerProfile.builder().id("P02").codeProfile(CodeProfile.ARCHITECT)
+						.name("Use AI to create projects").goal("Use AI to create projects")
+						.description("People who know programming and want to boost productivity with AI").build(),
+				CustomerProfile.builder().id("P03").codeProfile(CodeProfile.BEGINNER)
+						.name("Starting from scratch in programming").goal("Starting from scratch in programming")
+						.description("Absolute beginners who want to really learn programming")
+						.profileAnswers(Map.of(
+								Dimension.KNOWS_CODE, false,
+								Dimension.WANTS_TO_LEARN, false,
+								Dimension.KNOWS_ML, true,
+								Dimension.WANTS_TO_LEARN_ML, false,
+								Dimension.KNOWS_GIT, true
+						))
+						.build(),
+				CustomerProfile.builder()
+						.id("P04")
+						.codeProfile(CodeProfile.NON_DEVELOPER)
+						.name("General introductory course")
+						.goal("General introductory course")
+						.description("Non-developers who want to understand what developers do")
+						.profileAnswers(Map.of(
+										Dimension.KNOWS_CODE, false,
+										Dimension.WANTS_TO_LEARN, false,
+										Dimension.KNOWS_ML, false,
+										Dimension.WANTS_TO_LEARN_ML, false,
+										Dimension.KNOWS_GIT, true
+						))
+						.build()
+		);*/
+
+		// we will create 4 profiles from the JSON file
+		// JSON file is in docs/mockup/profiles.json
+		List<CustomerProfile> profiles = new ObjectMapper().readValue(
+				new File("../docs/mockup/profiles.json"),
+				new TypeReference<List<CustomerProfile>>() {});
+
+		/*Map<Dimension, Boolean> answers = new HashMap<>();
+		answers.put(Dimension.KNOWS_CODE, true);
+		answers.put(Dimension.WANTS_TO_LEARN, false);
+		profiles.getLast().setProfileAnswers(answers);*/
+
+		profiles.get(2).setProfileAnswers(Map.of(
+				Dimension.KNOWS_CODE, false,
+				Dimension.WANTS_TO_LEARN, false,
+				Dimension.KNOWS_ML, true,
+				Dimension.WANTS_TO_LEARN_ML, false,
+				Dimension.KNOWS_GIT, true
+		));
+
+		profiles.getLast().setProfileAnswers(Map.of(
+				Dimension.KNOWS_CODE, true,
+				Dimension.WANTS_TO_LEARN, true,
+				Dimension.KNOWS_ML, true,
+				Dimension.WANTS_TO_LEARN_ML, true,
+				Dimension.KNOWS_GIT, true
+		));
+
+		// we will assign a roadmap to each customer profile
+		for (CustomerProfile profile : profiles) {
+			List<RoadMap> assigned = new ArrayList<>();
+			for (RoadMap roadMap : roadMaps) {
+				if (roadMap.getName().contains("(" + profile.getId() + ")")) {
+					assigned.add(roadMap);
+				}
+			}
+			profile.setRecommendedRoadmaps(assigned);
+		}
+
+		//save the roadmaps
+		roadMapRepository.saveAll(roadMaps);
+
+		//save the customer profiles
+		customerProfileRepository.saveAll(profiles);
+
+		// print all roadmaps
+		roadMapRepository.findAll().forEach(System.out::println);
+
+		// print all customer profiles
+		for (CustomerProfile profile : profiles) {
+			CustomerProfile found = customerProfileRepository.findById(profile.getId()).orElseThrow();
+			System.out.println(found + " -> " + found.getRecommendedRoadmaps());
+			assertEquals(5, found.getRecommendedRoadmaps().size());
+		}
+
 	}
 
 }
